@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as ApiVoiceTranscribeRouteImport } from './routes/api/voice/transcribe'
 import { Route as ApiVoiceSpeakRouteImport } from './routes/api/voice/speak'
 import { Route as ApiPublicOauthGoogleCallbackRouteImport } from './routes/api/public/oauth/google/callback'
@@ -32,9 +35,24 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssistantRoute = AssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemoryRoute = MemoryRouteImport.update({
+  id: '/memory',
+  path: '/memory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiVoiceTranscribeRoute = ApiVoiceTranscribeRouteImport.update({
@@ -57,6 +75,9 @@ const ApiPublicOauthGoogleCallbackRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/assistant': typeof AssistantRoute
+  '/calendar': typeof CalendarRoute
+  '/memory': typeof MemoryRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/api/voice/speak': typeof ApiVoiceSpeakRoute
@@ -66,6 +87,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/assistant': typeof AssistantRoute
+  '/calendar': typeof CalendarRoute
+  '/memory': typeof MemoryRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/api/voice/speak': typeof ApiVoiceSpeakRoute
@@ -76,6 +100,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/assistant': typeof AssistantRoute
+  '/calendar': typeof CalendarRoute
+  '/memory': typeof MemoryRoute
   '/onboarding': typeof OnboardingRoute
   '/settings': typeof SettingsRoute
   '/api/voice/speak': typeof ApiVoiceSpeakRoute
@@ -87,6 +114,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/assistant'
+    | '/calendar'
+    | '/memory'
     | '/onboarding'
     | '/settings'
     | '/api/voice/speak'
@@ -96,6 +126,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/assistant'
+    | '/calendar'
+    | '/memory'
     | '/onboarding'
     | '/settings'
     | '/api/voice/speak'
@@ -105,6 +138,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/auth'
+    | '/assistant'
+    | '/calendar'
+    | '/memory'
     | '/onboarding'
     | '/settings'
     | '/api/voice/speak'
@@ -145,6 +181,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assistant': {
+      id: '/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/memory': {
+      id: '/memory'
+      path: '/memory'
+      fullPath: '/memory'
+      preLoaderRoute: typeof MemoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -179,6 +236,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  AssistantRoute: AssistantRoute,
+  CalendarRoute: CalendarRoute,
+  MemoryRoute: MemoryRoute,
   OnboardingRoute: OnboardingRoute,
   SettingsRoute: SettingsRoute,
   ApiVoiceSpeakRoute: ApiVoiceSpeakRoute,
