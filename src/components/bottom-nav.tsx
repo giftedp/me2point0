@@ -1,8 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Home, MessageSquare, Calendar, BookOpen, Settings } from "lucide-react";
 
-export function BottomNav() {
-  const path = typeof window !== "undefined" ? window.location.pathname : "/";
+export function BottomNav({ currentPath }: { currentPath?: string }) {
+  const path = currentPath ?? (typeof window !== "undefined" ? window.location.pathname : "/");
 
   const items = [
     { to: "/", label: "Home", icon: Home },

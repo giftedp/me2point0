@@ -159,7 +159,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      {!hideBottomNav && <BottomNav />}
+      {!hideBottomNav && <BottomNav currentPath={path} />}
       <Toaster />
     </QueryClientProvider>
   );
