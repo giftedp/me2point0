@@ -22,6 +22,7 @@ export function HomeDashboard({ name }: { name: string }) {
     return () => clearInterval(t);
   }, []);
 
+  const nav = useNavigate();
   const profileFn = useServerFn(getProfile);
   const accountsFn = useServerFn(getConnectedAccounts);
   const emailsFn = useServerFn(getUnreadEmails);
@@ -172,25 +173,34 @@ export function HomeDashboard({ name }: { name: string }) {
 
         {/* 6. Quick actions row */}
         <div className="flex gap-3">
-          {(() => {
-            const nav = useNavigate();
-            return (
-              <>
-                <button onClick={() => nav({ to: "/assistant" })} className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
-                  <MessageSquare className="h-4 w-4 text-brass" /> Ask me2.0
-                </button>
-                <button onClick={() => nav({ to: "/memory" })} className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
-                  <PlusCircle className="h-4 w-4 text-brass" /> New goal
-                </button>
-                <button onClick={() => nav({ to: "/calendar" })} className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
-                  <Calendar className="h-4 w-4 text-brass" /> See week
-                </button>
-                <button onClick={() => nav({ to: "/settings" })} className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
-                  <Settings className="h-4 w-4 text-brass" /> Connections
-                </button>
-              </>
-            );
-          })()}
+          <button
+            onClick={() => nav({ to: "/assistant" })}
+            className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <MessageSquare className="h-4 w-4 text-brass" /> Ask me2.0
+          </button>
+          <button
+            onClick={() => nav({ to: "/memory" })}
+            className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <PlusCircle className="h-4 w-4 text-brass" /> New goal
+          </button>
+          <button
+            onClick={() => nav({ to: "/calendar" })}
+            className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <Calendar className="h-4 w-4 text-brass" /> See week
+          </button>
+          <button
+            onClick={() => nav({ to: "/settings" })}
+            className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm"
+            style={{ border: "1px solid var(--border)" }}
+          >
+            <Settings className="h-4 w-4 text-brass" /> Connections
+          </button>
         </div>
       </div>
     </div>
