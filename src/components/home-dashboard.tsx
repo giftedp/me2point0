@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Mail, Star } from "lucide-react";
+import { Calendar, Mail, Star, MessageSquare, PlusCircle, Settings } from "lucide-react";
 
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile } from "@/lib/profile.functions";
@@ -9,7 +9,10 @@ import { getConnectedAccounts, getUnreadEmails, getCalendarEvents } from "@/lib/
 import { getGoals } from "@/lib/goals.functions";
 
 function formatDateTime(d: Date) {
-  return d.toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
+  // Produce: "Monday, July 14 · 10:42 AM"
+  const datePart = d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  const timePart = d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return `${datePart} · ${timePart}`;
 }
 
 export function HomeDashboard({ name }: { name: string }) {
@@ -46,13 +49,10 @@ export function HomeDashboard({ name }: { name: string }) {
   return (
     <div className="space-y-4">
       {/* 0. Header */}
-      <div className="rounded-2xl border border-border bg-card/90 p-4" style={{ backgroundColor: "transparent" }}>
+      <div className="rounded-2xl border border-border bg-card/90 p-4">
         <div className="space-y-1">
-          <div className="text-sm text-muted-foreground">{formatGreeting(now)},</div>
-          <div className="flex items-baseline justify-between">
-            <h2 className="text-2xl font-display font-semibold" style={{ color: "var(--brass)" }}>{`Good ${getDaypart(now)}, ${name}.`}</h2>
-            <div className="text-sm text-muted-foreground">{formatDateTime(now)}</div>
-          </div>
+          <h1 className="text-2xl font-display font-semibold" style={{ color: "var(--brass)" }}>{`${formatGreeting(now)}, ${name}.`}</h1>
+          <div className="text-sm text-muted-foreground">{formatDateTime(now)}</div>
         </div>
       </div>
 
@@ -70,12 +70,15 @@ export function HomeDashboard({ name }: { name: string }) {
             </div>
             <div>
               {cal ? (
-                <div className="text-sm text-muted-foreground">You have calendar connected — view in <Link to="/calendar" className="text-brass">Calendar</Link>.</div>
+                <Link to="/calendar" className="text-brass">View calendar</Link>
               ) : (
                 <Link to="/settings" className="rounded-full px-3 py-1 text-sm" style={{ backgroundColor: "var(--brass)", color: "white" }}>Connect</Link>
               )}
             </div>
           </div>
+          {!cal && (
+            <div className="mt-3 text-sm text-muted-foreground">Connect your calendar so I can see what your day looks like.</div>
+          )}
           {cal && (
             <div className="mt-3 text-sm">
               {calQ.data?.events?.length ? (
@@ -109,6 +112,9 @@ export function HomeDashboard({ name }: { name: string }) {
               )}
             </div>
           </div>
+          {!gmail && (
+            <div className="mt-3 text-sm text-muted-foreground">Connect Gmail so I can flag what actually matters.</div>
+          )}
           {gmail && (
             <div className="mt-3 text-sm">
               {(emailsQ.data?.emails ?? []).slice(0,3).map((e: any, i: number) => (
@@ -166,12 +172,18 @@ export function HomeDashboard({ name }: { name: string }) {
 
         {/* 6. Quick actions row */}
         <div className="flex gap-3">
-          <Link to="/assistant" className="flex-1 rounded-full border border-border bg-card px-4 py-2 text-sm text-center" style={{ backgroundColor: "transparent" }}>
-            Ask me2.0
+          <Link to="/assistant" className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
+            <MessageSquare className="h-4 w-4 text-brass" /> Ask me2.0
           </Link>
-          <Link to="/memory" className="flex-1 rounded-full border border-border bg-card px-4 py-2 text-sm text-center">New goal</Link>
-          <Link to="/calendar" className="flex-1 rounded-full border border-border bg-card px-4 py-2 text-sm text-center">See week</Link>
-          <Link to="/settings" className="flex-1 rounded-full border border-border bg-card px-4 py-2 text-sm text-center">Connections</Link>
+          <Link to="/memory" className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
+            <PlusCircle className="h-4 w-4 text-brass" /> New goal
+          </Link>
+          <Link to="/calendar" className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
+            <Calendar className="h-4 w-4 text-brass" /> See week
+          </Link>
+          <Link to="/settings" className="flex-1 flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" style={{ border: '1px solid var(--border)' }}>
+            <Settings className="h-4 w-4 text-brass" /> Connections
+          </Link>
         </div>
       </div>
     </div>
