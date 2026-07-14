@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Mail, Star, CheckCircle, Bolt, Grid, MessageSquare } from "lucide-react";
+import { Calendar, Mail, Star } from "lucide-react";
 
 import { useServerFn } from "@tanstack/react-start";
 import { getProfile } from "@/lib/profile.functions";
-import { getConnectedAccounts, getUnreadEmails } from "@/lib/integrations.functions";
+import { getConnectedAccounts, getUnreadEmails, getCalendarEvents } from "@/lib/integrations.functions";
+import { getGoals } from "@/lib/goals.functions";
 
 function formatDateTime(d: Date) {
   return d.toLocaleString(undefined, { weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
@@ -25,12 +26,13 @@ export function HomeDashboard({ name }: { name: string }) {
   const profileQ = useQuery({ queryKey: ["profile"], queryFn: () => profileFn({ data: undefined }) });
   const accountsQ = useQuery({ queryKey: ["connected-accounts"], queryFn: () => accountsFn({ data: undefined }) });
   const emailsQ = useQuery({ queryKey: ["unread-emails"], queryFn: () => emailsFn({ data: undefined }) });
+  const calQ = useQuery({ queryKey: ["calendar-events"], queryFn: () => getCalendarEvents({ data: undefined }) });
+  const goalsQ = useQuery({ queryKey: ["goals"], queryFn: () => getGoals({ data: undefined }) });
 
   const gmail = (accountsQ.data ?? []).find((a: any) => a.account_type === "gmail");
   const cal = (accountsQ.data ?? []).find((a: any) => a.account_type === "google_calendar");
 
-  const topGoalsRaw = profileQ.data?.top_goals ?? "";
-  const goals = topGoalsRaw ? topGoalsRaw.split(/\n+/).map((s: string) => s.trim()).filter(Boolean) : [];
+  const goals = (goalsQ.data ?? []) as Array<{ id: string; title: string; progress: number; is_active: boolean }>;
 
   const focusAreas = (profileQ.data?.focus_areas as string[]) ?? [];
 
@@ -75,7 +77,17 @@ export function HomeDashboard({ name }: { name: string }) {
             </div>
           </div>
           {cal && (
-            <div className="mt-3 text-sm text-muted-foreground">Today's events are available in Calendar.</div>
+            <div className="mt-3 text-sm">
+              {calQ.data?.events?.length ? (
+                <ul className="list-disc pl-4 text-sm text-muted-foreground">
+                  {calQ.data.events.map((e: any) => (
+                    <li key={e.id} className="py-1">{e.summary} — {new Date(e.start).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}</li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-sm text-muted-foreground">No events today.</div>
+              )}
+            </div>
           )}
         </div>
 
@@ -117,8 +129,8 @@ export function HomeDashboard({ name }: { name: string }) {
           <div className="mt-3 text-sm text-muted-foreground">
             {goals.length > 0 ? (
               <ul className="list-disc pl-4">
-                {goals.map((g: string, idx: number) => (
-                  <li key={idx} className="py-1">{renderGoalWithProgress(g)}</li>
+                {goals.map((g) => (
+                  <li key={g.id} className="py-1">{g.title} — {g.progress}%</li>
                 ))}
               </ul>
             ) : (

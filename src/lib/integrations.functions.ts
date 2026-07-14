@@ -297,3 +297,78 @@ export const getUnreadEmails = createServerFn({ method: "GET" })
 
     return { emails, error: null };
   });
+
+export const getCalendarEvents = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { decryptToken } = await import("./token-crypto.server");
+    const { refreshAccessToken } = await import("./gmail.server");
+
+    // Get calendar account
+    const { data: account, error } = await supabase
+      .from("connected_accounts")
+      .select("access_token_ciphertext, token_iv, refresh_token_ciphertext, refresh_token_iv")
+      .eq("user_id", userId)
+      .eq("account_type", "google_calendar")
+      .maybeSingle();
+
+    if (error) throw new Error(error.message);
+    if (!account) return { events: [], error: "Calendar not connected" };
+    if (!account.access_token_ciphertext || !account.token_iv) return { events: [], error: "Invalid calendar credentials" };
+
+    let accessToken = decryptToken(account.access_token_ciphertext, account.token_iv);
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    async function fetchEvents(token: string) {
+      const params = new URLSearchParams({
+        timeMin: startOfDay.toISOString(),
+        timeMax: endOfDay.toISOString(),
+        singleEvents: "true",
+        orderBy: "startTime",
+        maxResults: "10",
+      });
+      const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return { ok: false, status: res.status, body: await res.text() };
+      const payload = await res.json();
+      return { ok: true, payload };
+    }
+
+    let events: any[] = [];
+    const first = await fetchEvents(accessToken);
+    if (!first.ok && first.status === 401 && account.refresh_token_ciphertext && account.refresh_token_iv) {
+      const refreshToken = decryptToken(account.refresh_token_ciphertext, account.refresh_token_iv);
+      const newToken = await refreshAccessToken(refreshToken);
+      if (newToken) {
+        const { encryptToken } = await import("./token-crypto.server");
+        const encrypted = encryptToken(newToken);
+        await supabase
+          .from("connected_accounts")
+          .update({ access_token_ciphertext: encrypted.ciphertext, token_iv: encrypted.iv })
+          .eq("user_id", userId)
+          .eq("account_type", "google_calendar");
+        accessToken = newToken;
+        const retry = await fetchEvents(accessToken);
+        if (retry.ok) events = retry.payload.items ?? [];
+      }
+    } else if (first.ok) {
+      events = first.payload.items ?? [];
+    }
+
+    // Normalize minimal event info
+    const normalized = (events ?? []).map((ev: any) => ({
+      id: ev.id,
+      summary: ev.summary ?? "(No title)",
+      start: ev.start?.dateTime ?? ev.start?.date,
+      end: ev.end?.dateTime ?? ev.end?.date,
+      location: ev.location ?? null,
+    }));
+
+    return { events: normalized, error: null };
+  });
