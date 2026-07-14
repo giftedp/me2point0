@@ -158,7 +158,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <div style={{ minHeight: "100vh", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
+        <Outlet />
+      </div>
       {!hideBottomNav && <BottomNav currentPath={path} />}
       <Toaster />
     </QueryClientProvider>
