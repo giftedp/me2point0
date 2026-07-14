@@ -28,7 +28,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { clearHistory, getHistory, sendMessage } from "@/lib/chat.functions";
 import { getProfile } from "@/lib/profile.functions";
 import { getConnectedAccounts, getUnreadEmails } from "@/lib/integrations.functions";
-import { MorningBriefing } from "@/components/morning-briefing";
+import HomeDashboard from "@/components/home-dashboard";
 import mark from "@/assets/me2-mark.png";
 
 export const Route = createFileRoute("/")({
@@ -266,18 +266,7 @@ function AssistantApp({ displayName, skippedConnections }: { displayName: string
         style={{ minHeight: "calc(100vh - 200px)" }}
       >
         {showBriefing ? (
-          <MorningBriefing
-            greeting={greeting}
-            firstName={firstName}
-            unreadEmailCount={emailsQ.data?.emails?.length ?? 0}
-            focusAreas={(profileQ.data?.focus_areas as string[]) ?? []}
-            topGoals={profileQ.data?.top_goals ?? undefined}
-            onQuickPrompt={(p) => {
-              setInput(p);
-              setTimeout(() => inputRef.current?.focus(), 0);
-            }}
-            onVoiceStart={() => startRec()}
-          />
+          <HomeDashboard name={firstName} />
         ) : (
           <div className="space-y-6 pt-6">
             {messages.map((m) => (
