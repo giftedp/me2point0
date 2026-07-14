@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Home, MessageSquare, Calendar, BookOpen, Settings } from "lucide-react";
 
 export function BottomNav() {
@@ -12,6 +12,8 @@ export function BottomNav() {
     { to: "/settings", label: "Settings", icon: Settings },
   ];
 
+  const navigate = useNavigate();
+
   return (
     <nav className="pointer-events-auto fixed inset-x-0 bottom-4 z-30 flex justify-center">
       <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2 px-5">
@@ -20,9 +22,10 @@ export function BottomNav() {
             const Icon = it.icon as any;
             const active = path === it.to;
             return (
-              <Link
+              <button
                 key={it.to}
-                to={it.to}
+                type="button"
+                onClick={() => navigate({ to: it.to })}
                 className={
                   "flex flex-1 flex-col items-center gap-1 rounded-full px-3 py-2 text-xs transition " +
                   (active ? "text-brass" : "text-muted-foreground")
@@ -31,7 +34,7 @@ export function BottomNav() {
               >
                 <Icon className={"h-5 w-5 " + (active ? "text-brass" : "text-muted-foreground")} />
                 <span className="text-[11px]">{it.label}</span>
-              </Link>
+              </button>
             );
           })}
         </div>
