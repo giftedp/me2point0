@@ -121,11 +121,45 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [path, setPath] = useState(() => (typeof window !== "undefined" ? window.location.pathname : ""));
+
+  useEffect(() => {
+    function onLocationChange() {
+      setPath(window.location.pathname);
+    }
+
+    const origPush = history.pushState;
+    const origReplace = history.replaceState;
+
+    // patch history methods to notify SPA navigations
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    history.pushState = function (this: any, ...args: any[]) {
+      const result = origPush.apply(this, args as any);
+      onLocationChange();
+      return result;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    history.replaceState = function (this: any, ...args: any[]) {
+      const result = origReplace.apply(this, args as any);
+      onLocationChange();
+      return result;
+    };
+
+    window.addEventListener("popstate", onLocationChange);
+
+    return () => {
+      window.removeEventListener("popstate", onLocationChange);
+      history.pushState = origPush;
+      history.replaceState = origReplace;
+    };
+  }, []);
+
+  const hideBottomNav = path.startsWith("/auth");
 
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      <BottomNav />
+      {!hideBottomNav && <BottomNav />}
       <Toaster />
     </QueryClientProvider>
   );
