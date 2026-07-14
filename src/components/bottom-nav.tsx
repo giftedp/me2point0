@@ -1,9 +1,8 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Home, MessageSquare, Calendar, BookOpen, Settings } from "lucide-react";
 
 export function BottomNav() {
-  const loc = useLocation();
-  const path = loc.pathname ?? "/";
+  const path = typeof window !== "undefined" ? window.location.pathname : "/";
 
   const items = [
     { to: "/", label: "Home", icon: Home },
