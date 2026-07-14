@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import "../main-fonts";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
+import BottomNav from "@/components/bottom-nav";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -124,6 +125,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <BottomNav />
       <Toaster />
     </QueryClientProvider>
   );
