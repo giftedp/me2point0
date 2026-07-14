@@ -27,8 +27,10 @@ export function BottomNav({ currentPath }: { currentPath?: string }) {
                 type="button"
                 onClick={() => navigate({ to: it.to })}
                 className={
-                  "flex flex-1 flex-col items-center gap-1 rounded-full px-3 py-2 text-xs transition " +
-                  (active ? "text-brass" : "text-muted-foreground")
+                  "flex flex-1 flex-col items-center gap-1 rounded-full px-3 py-2 text-xs transition-all duration-200 " +
+                  (active
+                    ? "text-brass bg-brass/10 shadow-brass"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/80")
                 }
                 aria-current={active ? "page" : undefined}
               >
