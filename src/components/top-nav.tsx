@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Home, MessageSquare, Calendar, BookOpen, Settings } from "lucide-react";
 
@@ -14,6 +14,8 @@ export function TopNav({ currentPath }: { currentPath?: string }) {
   const path = currentPath ?? (typeof window !== "undefined" ? window.location.pathname : "/");
   const navRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // Publish the real nav height so page content can reserve exactly that much space.
   useEffect(() => {
@@ -39,7 +41,7 @@ export function TopNav({ currentPath }: { currentPath?: string }) {
       <div className="mx-auto flex w-full max-w-3xl items-center gap-1 px-3 py-2 sm:gap-2 sm:px-5 sm:py-3">
         {items.map((it) => {
           const Icon = it.icon;
-          const active = path === it.to;
+          const active = mounted && path === it.to;
           return (
             <button
               key={it.to}
