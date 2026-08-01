@@ -52,7 +52,7 @@ function AssistantPage() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const text = input.trim();
-    if (!text || sendMutation.isLoading) return;
+    if (!text || sendMutation.isPending) return;
     setInput("");
     sendMutation.mutate(text);
   }
@@ -85,7 +85,7 @@ function AssistantPage() {
             <button
               type="button"
               onClick={handleClear}
-              disabled={clearMutation.isLoading}
+              disabled={clearMutation.isPending}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground transition hover:border-brass hover:bg-brass/10 hover:text-brass disabled:cursor-not-allowed disabled:opacity-50"
             >
               <RefreshCcw className="h-4 w-4" /> Clear
@@ -95,7 +95,7 @@ function AssistantPage() {
 
         <div className="mt-6 flex flex-col gap-4">
           <div className="rounded-3xl border border-border bg-background/80 p-4 text-sm text-muted-foreground">
-            {historyQ.isLoading ? (
+            {historyQ.isPending ? (
               "Loading messages..."
             ) : messages.length === 0 ? (
               "Start a conversation to see your chat history here. me2.0 will keep the context for your next question."
@@ -140,10 +140,10 @@ function AssistantPage() {
                 <div className="text-xs text-muted-foreground">Need ideas? Try: “Help me prioritize my day.”</div>
                 <button
                   type="submit"
-                  disabled={!input.trim() || sendMutation.isLoading}
+                  disabled={!input.trim() || sendMutation.isPending}
                   className="inline-flex items-center gap-2 rounded-full bg-brass px-5 py-2 text-sm font-semibold text-foreground transition hover:bg-brass/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  <Send className="h-4 w-4" /> {sendMutation.isLoading ? "Sending…" : "Send"}
+                  <Send className="h-4 w-4" /> {sendMutation.isPending ? "Sending…" : "Send"}
                 </button>
               </div>
             </div>
