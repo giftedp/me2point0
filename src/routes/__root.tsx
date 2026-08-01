@@ -12,7 +12,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import "../main-fonts";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
-import BottomNav from "@/components/bottom-nav";
+import TopNav from "@/components/top-nav";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -154,21 +154,20 @@ function RootComponent() {
     };
   }, []);
 
-  const hideBottomNav = path.startsWith("/auth");
+  const hideNav = path.startsWith("/auth");
 
   return (
     <QueryClientProvider client={queryClient}>
+      {!hideNav && <TopNav currentPath={path} />}
       <div
         style={{
           minHeight: "100dvh",
-          paddingBottom: hideBottomNav
-            ? "env(safe-area-inset-bottom)"
-            : "calc(var(--bottom-nav-height, 5.5rem) + env(safe-area-inset-bottom) + 1rem)",
+          paddingTop: hideNav ? undefined : "calc(var(--top-nav-height, 4rem) + 0.5rem)",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
         }}
       >
         <Outlet />
       </div>
-      {!hideBottomNav && <BottomNav currentPath={path} />}
       <Toaster />
     </QueryClientProvider>
   );
