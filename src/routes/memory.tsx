@@ -47,7 +47,7 @@ function MemoryPage() {
   async function handleCreateGoal(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = title.trim();
-    if (!trimmed || createMutation.isLoading) return;
+    if (!trimmed || createMutation.isPending) return;
     setTitle("");
     await createMutation.mutateAsync(trimmed);
   }
@@ -67,7 +67,7 @@ function MemoryPage() {
 
         <div className="mt-6 space-y-4">
           <div className="rounded-3xl border border-border bg-background/80 p-5">
-            {goalsQ.isLoading ? (
+            {goalsQ.isPending ? (
               <p className="text-sm text-muted-foreground">Loading your goals…</p>
             ) : goals.length === 0 ? (
               <p className="text-sm text-muted-foreground">You don't have any goals yet. Add one below and check progress over time.</p>
@@ -83,7 +83,7 @@ function MemoryPage() {
                       <button
                         type="button"
                         onClick={() => completeMutation.mutate(goal.id)}
-                        disabled={completeMutation.isLoading || goal.progress === 100}
+                        disabled={completeMutation.isPending || goal.progress === 100}
                         className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition hover:border-brass hover:text-brass disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         <CheckCircle2 className="h-4 w-4 text-brass" /> Complete
@@ -114,7 +114,7 @@ function MemoryPage() {
               </div>
               <button
                 type="submit"
-                disabled={!title.trim() || createMutation.isLoading}
+                disabled={!title.trim() || createMutation.isPending}
                 className="inline-flex items-center gap-2 rounded-full bg-brass px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-brass/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Plus className="h-4 w-4" /> Add goal
