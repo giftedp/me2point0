@@ -103,7 +103,7 @@ function AssistantPage() {
           </div>
 
           <div className="min-h-[320px] overflow-hidden rounded-3xl border border-border bg-background/90">
-            <div ref={scrollRef} className="max-h-[48rem] space-y-3 overflow-y-auto p-4">
+            <div ref={scrollRef} className="max-h-[min(48rem,55dvh)] space-y-3 overflow-y-auto p-4">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
