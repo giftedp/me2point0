@@ -63,7 +63,7 @@ function AssistantPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background px-5 py-8">
+    <div className="min-h-full bg-background px-5 py-8">
       <div className="mx-auto max-w-4xl rounded-3xl border border-border bg-card/95 p-6 shadow-soft">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
           <div className="flex items-center gap-3">
