@@ -158,7 +158,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div style={{ minHeight: "100vh", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
+      <div
+        style={{
+          minHeight: "100dvh",
+          paddingBottom: hideBottomNav
+            ? "env(safe-area-inset-bottom)"
+            : "calc(var(--bottom-nav-height, 5.5rem) + env(safe-area-inset-bottom) + 1rem)",
+        }}
+      >
         <Outlet />
       </div>
       {!hideBottomNav && <BottomNav currentPath={path} />}

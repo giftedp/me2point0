@@ -63,7 +63,7 @@ function AssistantPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background px-5 py-8">
+    <div className="min-h-full bg-background px-5 py-8">
       <div className="mx-auto max-w-4xl rounded-3xl border border-border bg-card/95 p-6 shadow-soft">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
           <div className="flex items-center gap-3">
@@ -103,7 +103,7 @@ function AssistantPage() {
           </div>
 
           <div className="min-h-[320px] overflow-hidden rounded-3xl border border-border bg-background/90">
-            <div ref={scrollRef} className="max-h-[48rem] space-y-3 overflow-y-auto p-4">
+            <div ref={scrollRef} className="max-h-[min(48rem,55dvh)] space-y-3 overflow-y-auto p-4">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
